@@ -11,8 +11,7 @@ public_users.post("/register", (req, res) => {
   if (!username || !password) {
     throw new Error('Username/password are missing');
   }
-  const userExist = users.find(user => user.username === username);
-  if (userExist) {
+  if (isValid(username)) {
     throw new Error('Username already exists');
   }
 
