@@ -18,5 +18,8 @@ const PORT =5000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
-
+app.use("/", (err, req, res, next)=>{
+    res.status(400).json({message: err.message});
+    next(err);
+});
 app.listen(PORT,()=>console.log("Server is running"));
