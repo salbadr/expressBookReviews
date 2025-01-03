@@ -13,7 +13,6 @@ let users = [
 
 const isValid = (username) => { //returns boolean
   const userExist = users.find(user => user.username === username);
-  console.log(userExist);
   return userExist;
 }
 
@@ -27,7 +26,6 @@ const authenticatedUser = (username, password) => { //returns boolean
 regd_users.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (authenticatedUser(username, password)) {
-    req.session.username = username;
     const token = jwt.sign({ username }, 'fingerprint_customer')
     return res.status(200).json({ token });
 
@@ -38,8 +36,28 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const { review } = req.body;
+  const { isbn } = req.params;
+  const { username } = req.session;
+  const book_to_review = books[isbn];
+  book_to_review.reviews = { ...book_to_review.reviews, [username]: review }
+  return res.status(200).json({ message: "Review successfully updated" });
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const { isbn } = req.params;
+  const { username } = req.session;
+  const book_to_review = books[isbn];
+  const updated_reviews = {}
+  for (const [key, value] of Object.entries(book_to_review.reviews)) {
+    if (key !== username) {
+      updated_reviews[key] = value
+    }
+  }
+  book_to_review.reviews = updated_reviews;
+
+  return res.status(200).json({ message: "Review successfully deleted" });
 });
 
 module.exports.authenticated = regd_users;
