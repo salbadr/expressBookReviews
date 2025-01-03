@@ -1,10 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-let books = require("./booksdb.js");
-const session = require('express-session');
+const books = require("./booksdb.js");
 const regd_users = express.Router();
 
-let users = [
+const users = [
   { username: 'john009', password: '111111' },
   { username: 'rob989', password: '222222' },
   { username: 'jane678', password: '333333' },
