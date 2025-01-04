@@ -11,7 +11,7 @@ app.use(express.json());
 app.use("/customer", session({ secret: "fingerprint_customer", resave: true, saveUninitialized: true }))
 
 app.use("/customer/auth/*", function auth(req, res, next) {
-    const token = req.headers.authorization.replace('Bearer ', '');
+    const { token } = req.session;
     const payload = jwt.verify(token, "fingerprint_customer")
     if (payload) {
         req.session.username = payload.username;

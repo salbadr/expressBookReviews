@@ -26,7 +26,9 @@ regd_users.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (authenticatedUser(username, password)) {
     const token = jwt.sign({ username }, 'fingerprint_customer')
-    return res.status(200).json({ token });
+    req.session.token = token;
+
+    return res.status(200).json({message: 'Customer successfully logged in'});
 
   }
   //Write your code here
@@ -40,7 +42,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const { username } = req.session;
   const book_to_review = books[isbn];
   book_to_review.reviews = { ...book_to_review.reviews, [username]: review }
-  return res.status(200).json({ message: "Review successfully updated" });
+  return res.status(200).json({ message: `The review for the book with ISBN ${isbn} has been successfully added/updated` });
 });
 
 // Delete a book review
@@ -56,7 +58,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   }
   book_to_review.reviews = updated_reviews;
 
-  return res.status(200).json({ message: "Review successfully deleted" });
+  return res.status(200).json({ message: `Review for the book with ISBN ${isbn} posted by the user ${username} deleted.` });
 });
 
 module.exports.authenticated = regd_users;
